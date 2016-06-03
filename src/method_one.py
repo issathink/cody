@@ -8,7 +8,6 @@ import copy
 """
 def check_path(mat, visited, u, v, t):
 
-
     return False
 
 def iterative_dfs(graph, start, path=[]):
@@ -55,7 +54,7 @@ def algo(filename, vertex_id, time):
         if check_path(tmp_mat, [], int(k), vertex_id, time):
             nb_in += 1
 
-    # print "Nombre de in : " + str(nb_in) + " du sommet : " + str(vertex_id)
+    print "Nombre de in : " + str(nb_in) + " du sommet : " + str(vertex_id)
     tmp_mat["1"] = []
     for k, v in mat.items():
         print k + " [" + ', '.join(map(str, v)) + "]"
