@@ -2,7 +2,6 @@ import sys
 import os
 from os.path import isfile
 from src.tool import check_int
-from src.algo import test, test_time
 from src.method_one import algo
 
 """
@@ -10,7 +9,7 @@ from src.method_one import algo
 """
 
 # args = sys.stdin.readline().split(" ")
-args = "../data/test.dyn 1 9999999999".split(" ")
+args = "../data/test.dyn 0 9999999999".split(" ")
 
 if len(args) <= 2:
     print "Usage:  filename  vertex_id (>0)  time (>0)"
@@ -24,10 +23,10 @@ if (not check_int(args[1])) or (not check_int(args[2].strip())):
     print "Positive int are expected for vertex_id and time."
     sys.exit(-1)
 
-filename  = args[0]
+filename = args[0]
 vertex_id = int(args[1])
-time      = int(args[2].strip())
+time = int(args[2].strip())
 
 # test(filename) #, vertex_id, time)
 # test_time(filename, 98277034)
-algo(filename, vertex_id, time)
+print "(nb_in, nb_out)[" + str(vertex_id) + "][" + str(time) + "] = " + str(algo(filename, vertex_id, time))
