@@ -1,82 +1,15 @@
 from src.tool import get_time_links
 
 """
-    Check if there is a temporal path between u and v starting on 0 (or after) and
-    arriving before t.
-    @:return true or false
-"""
-def check_path(mat, visited, u, v, t):
-
-    return False
-
-
-def adjacent(graph, start):
-    return graph.get(start)
-
-
-"""
-    Recursive version of the DFS for timelinked graphs
-"""
-def recursive_dfs(graph, start, path=set()):
-    visited = {}
-    nb_visited = 0
-
-    # for e in vertexes:
-    #    visited.update({e: False})
-
-    adj = adjacent(graph, start)
-
-    while nb_visited != len(adj):
-        for i in range(len(adj)):
-            print i
-
-
-def dfs(graph, start):
-    visited, stack = [], [start]
-    last_time = 0
-
-    while stack:
-        vertex = stack.pop()
-        if vertex not in visited:
-            l = graph.get(vertex)
-            if l[0].time > last_time:
-                visited.append(vertex)
-                tmp = [l[0].nodeA, l[0].nodeB]
-                stack.extend(tmp)
-
-            # print graph.get(vertex)
-            # visited.append(vertex)
-            # stack.extend(graph[vertex] - visited)
-
-    return visited
-
-
-def iterative_dfs(graph, start, path=[]):
-
-    q = [start]
-    print str(graph.get(start)[0])
-    # last = start.time
-
-    print graph.get(start)
-
-    while q:
-        v = q.pop(0)
-        if v not in path:
-            path = path + [v]
-            # q = graph[v] + q
-    return path
-
-
-"""
     Find how many nodes can access the node identified by vertex_id
     before time.
 """
-def algo(filename, vertex_id, time):
+def algo(filename, time):
 
     nb_in = 0
     mat = {}
     (l, vertexes) = get_time_links(filename)
-    elems = filter(lambda e: e.time < time, l)
+    # elems = filter(lambda e: e.time < time, l)
     # elems.sort(key=lambda e: e.time)
 
     # Foreach node list its neighbours
@@ -120,26 +53,26 @@ def algo(filename, vertex_id, time):
     # print recursive_dfs(tmp_mat, "1")
     # print dfs(mat, "1")
     nb_v = len(vertexes)
-    return compute_dist(l, nb_v, vertex_id)
+    # return compute_dist(l, nb_v)
+    return compute_dist_node(l, 0, nb_v)
 
 
-def compute_dist(l, nb_vertexes, vertex_id):
-    # print "> " + str(vertexes) + " nbv: " + str(nb_v)
-
+def compute_dist(timelink_list, nb_vertexes):
     prev_time = -1
     cur_time = -1;
 
     mat = [[0]*nb_vertexes for i in range(nb_vertexes)]
     mat_prev = [[0]*nb_vertexes for i in range(nb_vertexes)]
+    result = []
 
-    # Matrix intialisation
+    # Matrix initialisation
     for i in range(nb_vertexes):
         for j in range(nb_vertexes):
             mat[i][j] = -1
             mat_prev[i][j] = -1
         mat_prev[i][i] = 0
 
-    for elem in l:
+    for elem in timelink_list:
         if cur_time == -1:
             prev_time = elem.time
             cur_time = elem.time
@@ -180,13 +113,84 @@ def compute_dist(l, nb_vertexes, vertex_id):
     nb_in = 0
     nb_out = 0
     for i in range(nb_vertexes):
-        if mat[vertex_id][i] != -1 and i != vertex_id:
-            nb_in += 1
-        if mat[i][vertex_id] != -1 and i != vertex_id:
+        for j in range(nb_vertexes):
+            if mat[i][j] != -1 and i != j:
+                nb_out += 1
+            if mat[j][i] != -1 and i != j:
+                nb_in += 1
+        result.append({i: (nb_in, nb_out)})
+        nb_in = 0
+        nb_out = 0
+
+    # Debug logs only when its human readable
+    if nb_vertexes < 10:
+        for i in range(nb_vertexes):
+            print mat[i]
+
+    compute_dist_node(timelink_list, 1, nb_vertexes)
+
+    return result
+
+
+def compute_dist_node(timelink_list, vertex_id, nb_vertexes):
+
+    res = [-1 for i in range(nb_vertexes)]
+    res_prev = [-1 for i in range(nb_vertexes)]
+    cur_time = -1
+    res[vertex_id] = 0
+
+    for elem in timelink_list:
+        res[vertex_id] = elem.time
+
+        if elem.nodeA == vertex_id:
+            cur_time = elem.time
+            res[elem.nodeB] = cur_time
+        elif elem.nodeB == vertex_id:
+            cur_time = elem.time
+            res[elem.nodeA] = cur_time
+
+        prev_time = cur_time
+        cur_time = elem.time
+
+        if prev_time != cur_time:
+            for i in range(nb_vertexes):
+                res_prev[i] = res[i]
+
+        if res_prev[elem.nodeA] != -1:
+            if res_prev[elem.nodeB] != -1:
+                if res[elem.nodeA] > res[elem.nodeB]:
+                    res[elem.nodeA] = res[elem.nodeB]
+                elif res[elem.nodeB] > res[elem.nodeA]:
+                    res[elem.nodeB] = res[elem.nodeA]
+            else:
+                if res[elem.nodeB] == -1 or res[elem.nodeB] > res[elem.nodeA]:
+                    res[elem.nodeB] = res_prev[elem.nodeA]
+        else:
+            if res_prev[elem.nodeB] != -1:
+                if res[elem.nodeA] == -1 or res[elem.nodeA] > res_prev[elem.nodeB]:
+                    res[elem.nodeA] = res_prev[elem.nodeB]
+
+    nb_out = 0
+    for i in range(nb_vertexes):
+        if res[i] != -1 and i != vertex_id:
             nb_out += 1
-    # for i in range((nb_vertexes)):
-    #    print mat[i]
-    # print "nb_in: " + str(nb_in) + " nb_out: " + str(nb_out)
+    print "nb_in[" + str(vertex_id) + "] = " + str(nb_out)
 
-    return (nb_in, nb_out)
+    print res
 
+    return res
+
+"""
+    Finds how many nodes can access the one identified by vertex_id
+    @:return array of ids (size: nb_vertexes)
+"""
+def compute_nb_in(timelink_list, vertex_id, nb_vertexes):
+    res = [-1 for i in range(nb_vertexes)]
+    res_prev = [-1 for i in range(nb_vertexes)]
+    cur_time = -1
+    res[vertex_id] = 0
+
+    for elem in timelink_list:
+        res[vertex_id] = elem.time
+
+    return res
