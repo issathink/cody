@@ -1,80 +1,26 @@
+import time
 from src.tool import get_time_links
 
-"""
-    Find how many nodes can access the node identified by vertex_id
-    before time.
-"""
-def algo(filename, time):
 
-    nb_in = 0
-    mat = {}
-    (l, vertexes) = get_time_links(filename)
-    # elems = filter(lambda e: e.time < time, l)
-    # elems.sort(key=lambda e: e.time)
+def compute_nb_in_out(filename, instant):
+    cur_time = -1
 
-    # Foreach node list its neighbours
-    # Map<Node, [neighbours]>
-    # for elem in elems:
-    #    try:
-    #        mat[str(elem.nodeA)].append(elem)
-    #    except KeyError:
-    #        mat[str(elem.nodeA)] = [elem]
-    #    try:
-    #        mat[str(elem.nodeB)].append(elem)
-    #    except KeyError:
-    #        mat[str(elem.nodeB)] = [elem]
+    (links, vertexes) = get_time_links(filename, instant)
+    nb_vertexes = len(vertexes)
 
-    # print "\n========== Nodes ==========\n"
-    # print vertexes
-    # print "\n---------------------------\n"
-
-    # for k, v in mat.items():
-    #    print k + " [" + ', '.join(map(str, v)) + "]"
-    # tmp_mat = None
-
-    # for k in mat:
-    #    print k
-    #    tmp_mat = copy.deepcopy(mat) # EVIL !!!
-    #    if check_path(tmp_mat, [], int(k), vertex_id, time):
-    #        nb_in += 1
-
-    # print "Nombre de in : " + str(nb_in) + " du sommet : " + str(vertex_id)
-    # tmp_mat["1"] = []
-    # for k, v in mat.items():
-    #    print k + " [" + ', '.join(map(str, v)) + "]"
-
-    # print "-------------"
-    # for k, v in tmp_mat.items():
-    #    print k + " [" + ', '.join(map(str, v)) + "]"
-
-    # graph = { 1: set([2, 3]), 2: set([1]), 3: set([1, 2]) }
-    # print graph
-    # print iterative_dfs(tmp_mat, "1")
-    # print recursive_dfs(tmp_mat, "1")
-    # print dfs(mat, "1")
-    nb_v = len(vertexes)
-    # return compute_dist(l, nb_v)
-    return compute_dist_node(l, 0, nb_v)
-
-
-def compute_dist(timelink_list, nb_vertexes):
-    prev_time = -1
-    cur_time = -1;
-
-    mat = [[0]*nb_vertexes for i in range(nb_vertexes)]
-    mat_prev = [[0]*nb_vertexes for i in range(nb_vertexes)]
+    mat = [[0]*nb_vertexes for _ in range(nb_vertexes)]
+    mat_prev = [[0]*nb_vertexes for _ in range(nb_vertexes)]
     result = []
 
-    # Matrix initialisation
     for i in range(nb_vertexes):
         for j in range(nb_vertexes):
             mat[i][j] = -1
             mat_prev[i][j] = -1
         mat_prev[i][i] = 0
 
-    for elem in timelink_list:
+    st = time.time()
+    for elem in links:
         if cur_time == -1:
-            prev_time = elem.time
             cur_time = elem.time
             for i in range(nb_vertexes):
                 mat[i][i] = cur_time
@@ -83,10 +29,15 @@ def compute_dist(timelink_list, nb_vertexes):
         cur_time = elem.time
 
         if prev_time != cur_time:
+            # for i in range(nb_vertexes):
+            #    for j in range(nb_vertexes):
+            #        mat_prev[i][j] = mat[i][j]
+            #    mat[i][i] = cur_time
+
+            # This one is slightly faster
             for i in range(nb_vertexes):
-                for j in range(nb_vertexes):
-                    mat_prev[i][j] = mat[i][j]
                 mat[i][i] = cur_time
+            mat_prev = [row[:] for row in mat]
 
         mat[elem.nodeA][elem.nodeB] = cur_time
         mat[elem.nodeB][elem.nodeA] = cur_time
@@ -106,6 +57,7 @@ def compute_dist(timelink_list, nb_vertexes):
                     if mat_prev[elem.nodeB][i] != -1:
                         if mat[elem.nodeA][i] == -1 or mat[elem.nodeA][i] > mat_prev[elem.nodeB][i]:
                             mat[elem.nodeA][i] = mat_prev[elem.nodeB][i]
+    print "Loop: " + str(time.time() - st)
 
     for i in range(nb_vertexes):
         mat[i][i] = cur_time
@@ -126,20 +78,26 @@ def compute_dist(timelink_list, nb_vertexes):
     if nb_vertexes < 10:
         for i in range(nb_vertexes):
             print mat[i]
-
-    compute_dist_node(timelink_list, 1, nb_vertexes)
+        print
 
     return result
 
 
-def compute_dist_node(timelink_list, vertex_id, nb_vertexes):
+def compute_vertex_nb_in(filename, instant, vertex_id, t_links=None, t_vertexes=None):
+    if t_links is None:
+        (links, vertexes) = get_time_links(filename, instant)
+        nb_vertexes = len(vertexes)
+    else:
+        links = t_links
+        vertexes = t_vertexes
+        nb_vertexes = len(vertexes)
 
-    res = [-1 for i in range(nb_vertexes)]
-    res_prev = [-1 for i in range(nb_vertexes)]
+    res = [-1 for _ in range(nb_vertexes)]
+    res_prev = [-1 for _ in range(nb_vertexes)]
     cur_time = -1
     res[vertex_id] = 0
 
-    for elem in timelink_list:
+    for elem in links:
         res[vertex_id] = elem.time
 
         if elem.nodeA == vertex_id:
@@ -170,27 +128,26 @@ def compute_dist_node(timelink_list, vertex_id, nb_vertexes):
                 if res[elem.nodeA] == -1 or res[elem.nodeA] > res_prev[elem.nodeB]:
                     res[elem.nodeA] = res_prev[elem.nodeB]
 
-    nb_out = 0
+    nb_in = 0
     for i in range(nb_vertexes):
         if res[i] != -1 and i != vertex_id:
-            nb_out += 1
-    print "nb_in[" + str(vertex_id) + "] = " + str(nb_out)
+            nb_in += 1
 
-    print res
+    return nb_in, res
 
-    return res
 
-"""
-    Finds how many nodes can access the one identified by vertex_id
-    @:return array of ids (size: nb_vertexes)
-"""
-def compute_nb_in(timelink_list, vertex_id, nb_vertexes):
-    res = [-1 for i in range(nb_vertexes)]
-    res_prev = [-1 for i in range(nb_vertexes)]
-    cur_time = -1
-    res[vertex_id] = 0
+def compute_vertex_nb_out(filename, instant, vertex_id):
+    (links, vertexes) = get_time_links(filename, instant)
+    nb_vertexes = len(vertexes)
+    nb_out = 0
+    res = [-1 for _ in range(nb_vertexes)]
 
-    for elem in timelink_list:
-        res[vertex_id] = elem.time
+    res[vertex_id] = vertex_id
+    for i in range(nb_vertexes):
+        if i != vertex_id:
+            result = compute_vertex_nb_in(filename, instant, i, links, vertexes)
+            if result[1][vertex_id] != -1:
+                nb_out += 1
+                res[i] = result[1][vertex_id]
 
-    return res
+    return nb_out, res

@@ -1,7 +1,7 @@
 class Timelink(object):
     nodeA = -1;
     nodeB = -1;
-    time  = -1;
+    time = -1;
 
     def __init__(self, nodeA, nodeB, time):
         self.nodeA = nodeA

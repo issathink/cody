@@ -1,19 +1,13 @@
 from src.timelink import Timelink
 
-"""
-    Check if 's' is a string of digit.
-    @:param s - the string to verify
-    @:return true or false
-"""
+
 def check_int(s):
-    if s[0] in ('+'):
-    	return s[1:].isdigit()
+    if s[0] in '+':
+        return s[1:].isdigit()
     return s.isdigit()
 
-"""
-    Given a file, return list of time links
-"""
-def get_time_links(filename):
+
+def get_time_links(filename, instant=None):
     l = []
     v = set()
 
@@ -23,12 +17,15 @@ def get_time_links(filename):
             time = int(tmp[2])
             nodeA = int(tmp[0])
             nodeB = int(tmp[1])
-            timelink = Timelink.create(nodeA, nodeB, time)  # make_timelink(nodeA, nodeB, time)
+            timelink = Timelink.create(nodeA, nodeB, time)
             l.append(timelink)
             v.add(nodeA)
             v.add(nodeB)
 
-    return (l,v)
+    if instant is not None:
+        l = filter(lambda e: e.time < instant, l)
+
+    return l, v
 
 
 def get_time_low(l, time):
