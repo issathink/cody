@@ -3,9 +3,11 @@ import os
 import time
 from os.path import isfile
 from src.tool import check_int
+from src.tool import get_time_links
 from src.method_one import compute_nb_in_out
 from src.method_one import compute_vertex_nb_in
 from src.method_one import compute_vertex_nb_out
+
 
 """
     Entry point
@@ -30,20 +32,25 @@ filename = args[0]
 vertex_id = int(args[1])
 instant = int(args[2].strip())
 
+(links, vertexes) = get_time_links(filename, instant)
+nb_vertexes = len(vertexes)
+
 start = time.time()
 
 print "\n####### nb_in/out: #########"
-result = compute_nb_in_out(filename, instant)
+result = compute_nb_in_out(links, nb_vertexes)
 for i in range(len(result)):
     print "(nb_in, nb_out)[" + str(i) + "][" + str(instant) + "] = " + str(result[i])
 
+
 print "\n########## nb_in: ###########"
-for i in range(4):
-    print "nb_in[" + str(i) + "] = " + str(compute_vertex_nb_in(filename, instant, i))
+for i in range(nb_vertexes):
+    print "nb_in[" + str(i) + "] = " + str(compute_vertex_nb_in(links, nb_vertexes, i))
+
 
 print "\n######### nb_out: ###########"
-for i in range(4):
-    print "nb_out[" + str(i) + "] = " + str(compute_vertex_nb_out(filename, instant, i))
+for i in range(nb_vertexes):
+    print "nb_out[" + str(i) + "] = " + str(compute_vertex_nb_out(links, nb_vertexes, i))
 
 end = time.time()
 print "\nTime elapsed: " + str(end-start) + " sec(s)"

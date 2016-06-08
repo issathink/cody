@@ -1,12 +1,8 @@
 import time
-from src.tool import get_time_links
 
 
-def compute_nb_in_out(filename, instant):
+def compute_nb_in_out(links, nb_vertexes):
     cur_time = -1
-
-    (links, vertexes) = get_time_links(filename, instant)
-    nb_vertexes = len(vertexes)
 
     mat = [[0]*nb_vertexes for _ in range(nb_vertexes)]
     mat_prev = [[0]*nb_vertexes for _ in range(nb_vertexes)]
@@ -83,15 +79,7 @@ def compute_nb_in_out(filename, instant):
     return result
 
 
-def compute_vertex_nb_in(filename, instant, vertex_id, t_links=None, t_vertexes=None):
-    if t_links is None:
-        (links, vertexes) = get_time_links(filename, instant)
-        nb_vertexes = len(vertexes)
-    else:
-        links = t_links
-        vertexes = t_vertexes
-        nb_vertexes = len(vertexes)
-
+def compute_vertex_nb_in(links, nb_vertexes, vertex_id):
     res = [-1 for _ in range(nb_vertexes)]
     res_prev = [-1 for _ in range(nb_vertexes)]
     cur_time = -1
@@ -136,16 +124,14 @@ def compute_vertex_nb_in(filename, instant, vertex_id, t_links=None, t_vertexes=
     return nb_in, res
 
 
-def compute_vertex_nb_out(filename, instant, vertex_id):
-    (links, vertexes) = get_time_links(filename, instant)
-    nb_vertexes = len(vertexes)
+def compute_vertex_nb_out(links, nb_vertexes, vertex_id):
     nb_out = 0
     res = [-1 for _ in range(nb_vertexes)]
 
     res[vertex_id] = vertex_id
     for i in range(nb_vertexes):
         if i != vertex_id:
-            result = compute_vertex_nb_in(filename, instant, i, links, vertexes)
+            result = compute_vertex_nb_in(links, nb_vertexes, i)
             if result[1][vertex_id] != -1:
                 nb_out += 1
                 res[i] = result[1][vertex_id]
