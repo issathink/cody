@@ -5,6 +5,7 @@ from os.path import isfile
 from src.tool import check_int
 from src.tool import get_time_links
 from src.method_one import compute_nb_in_out
+from src.method_one import compute_nb_in_out_array
 from src.method_one import compute_vertex_nb_in
 from src.method_one import compute_vertex_nb_out
 
@@ -14,7 +15,7 @@ from src.method_one import compute_vertex_nb_out
 """
 
 # args = sys.stdin.readline().split(" ")
-args = "../data/test2.dyn 0 99999999".split(" ")
+args = "../data/rollernet.dyn 0 99999999".split(" ")
 
 if len(args) <= 2:
     print "Usage:  filename  vertex_id (>0)  time (>0)"
@@ -37,20 +38,45 @@ nb_vertexes = len(vertexes)
 
 start = time.time()
 
-print "\n####### nb_in/out: #########"
+print "\n####### nb_in/out matrix: #########"
 result = compute_nb_in_out(links, nb_vertexes)
 for i in range(len(result)):
     print "(nb_in, nb_out)[" + str(i) + "][" + str(instant) + "] = " + str(result[i])
+print "$$$ nb_in/out matrix: " + str(time.time() - start) + " sec"
 
 
+# This is version is slightly slower than the previous one
+# but resolves the memory limitation
+print "\n####### nb_in/out array: #########"
+st1 = time.time()
+result = compute_nb_in_out_array(links, nb_vertexes)
+for i in range(len(result)):
+    print "(nb_in, nb_out)[" + str(i) + "][" + str(instant) + "] = " + str(result[i])
+print "$$$ nb_in/out array: " + str(time.time() - st1) + " sec"
+
+
+st1 = time.time()
 print "\n########## nb_in: ###########"
 for i in range(nb_vertexes):
-    print "nb_in[" + str(i) + "] = " + str(compute_vertex_nb_in(links, nb_vertexes, i))
+    res = compute_vertex_nb_in(links, nb_vertexes, i)
+    if len(res[1]) < 10:
+        print "nb_in[" + str(i) + "] = " + str(res)
+    else:
+        print "nb_in[" + str(i) + "] = " + str(res[0])
+print "\n$$$ nb_in: " + str(time.time() - st1) + " sec"
 
 
+st1 = time.time()
 print "\n######### nb_out: ###########"
 for i in range(nb_vertexes):
-    print "nb_out[" + str(i) + "] = " + str(compute_vertex_nb_out(links, nb_vertexes, i))
+    res = compute_vertex_nb_out(links, nb_vertexes, i)
+    if len(res[1]) < 10:
+        print "nb_out[" + str(i) + "] = " + str(res)
+    else:
+        print "nb_out[" + str(i) + "] = " + str(res[0])
+print "\n$$$ nb_out: " + str(time.time() - st1) + " sec"
+
 
 end = time.time()
 print "\nTime elapsed: " + str(end-start) + " sec(s)"
+
