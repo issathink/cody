@@ -108,6 +108,64 @@ def compute_vertex_nb_in(links, nb_vertexes, vertex_id):
     res_prev = [-1 for _ in range(nb_vertexes)]
     cur_time = -1
     res[vertex_id] = 0
+    i_prev = -1
+
+    for elem in links:
+        res[vertex_id] = elem.time
+
+        if elem.nodeA == vertex_id:
+            cur_time = elem.time
+            res[elem.nodeB] = cur_time
+            i_prev = elem.nodeB
+        elif elem.nodeB == vertex_id:
+            cur_time = elem.time
+            res[elem.nodeA] = cur_time
+            i_prev = elem.nodeA
+
+        prev_time = cur_time
+        cur_time = elem.time
+
+        if prev_time != cur_time:
+            if i_prev != -1:
+                res_prev[i_prev] = res[i_prev]
+
+        #    for i in range(nb_vertexes):
+        #        res_prev[i] = res[i]
+
+        if res_prev[elem.nodeA] != -1:
+            if res_prev[elem.nodeB] != -1:
+                if res[elem.nodeA] > res[elem.nodeB]:
+                    res[elem.nodeA] = res[elem.nodeB]
+                    i_prev = elem.nodeA
+                elif res[elem.nodeB] > res[elem.nodeA]:
+                    res[elem.nodeB] = res[elem.nodeA]
+                    i_prev = elem.nodeB
+            else:
+                if res[elem.nodeB] == -1 or res[elem.nodeB] > res[elem.nodeA]:
+                    res[elem.nodeB] = res_prev[elem.nodeA]
+                    i_prev = elem.nodeB
+        else:
+            if res_prev[elem.nodeB] != -1:
+                if res[elem.nodeA] == -1 or res[elem.nodeA] > res_prev[elem.nodeB]:
+                    res[elem.nodeA] = res_prev[elem.nodeB]
+                    i_prev = elem.nodeA
+
+    nb_in = 0
+    for i in range(nb_vertexes):
+        if res[i] != -1 and i != vertex_id:
+            nb_in += 1
+
+    return nb_in, res
+
+
+def compute_vertex_nb_in2(links, nb_vertexes, vertex_id):
+    if len(links) <= 0:
+        raise Exception("Helppppppp! links is empty!")
+
+    res = [-1 for _ in range(nb_vertexes)]
+    res_prev = [-1 for _ in range(nb_vertexes)]
+    cur_time = -1
+    res[vertex_id] = 0
 
     for elem in links:
         res[vertex_id] = elem.time
