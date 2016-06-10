@@ -1,1 +1,4 @@
-nb_in:
+L=(T, V, E) time links.
+
+nb_in(v, t): at a given time, the number of nodes that can access v before t.
+nb_out(v, t): the number of nodes v can access before t (starting at 0 or the minimum time).
