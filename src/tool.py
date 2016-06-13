@@ -1,4 +1,8 @@
+import os
 from src.timelink import Timelink
+from src.method_one import nb_in_out_with_fixed_value
+from src.method_one import nb_in_out_fixed_vertex
+from src.method_one import nb_in_out_delta_variance
 
 
 def check_int(s):
@@ -37,7 +41,7 @@ def get_time_up(l, time):
 
 
 def generate_plot_file(filename, result):
-    print result
+    # print result
     with open("./../data/" + filename + "_nb_in.txt", "w+") as f:
         tmp = "0 " + str(result[0].get(0)[0])
         f.write(tmp)
@@ -51,6 +55,40 @@ def generate_plot_file(filename, result):
         for i in range(1, len(result)):
             tmp = "\n" + str(i) + " " + str(result[i].get(i)[1])
             f.write(tmp)
+
+
+def plot_in_out_for_each_value(filename, result):
+    with open("./../data/" + filename + ".txt", "w+") as f:
+        for i in range(len(result)):
+            tmp = str(i) + " " + str(nb_in_out_with_fixed_value(result, i)) + "\n"
+            f.write(tmp)
+
+
+def plot_vertex_distribution(filename, links, vertex_id, nb_vertexes):
+    result = nb_in_out_fixed_vertex(links, vertex_id, nb_vertexes)
+    with open("./../data/" + filename + "_in.txt", "w+") as f:
+        for r in result:
+            tmp = str(r.get("time")) + " " + str(r.get("nb_in")) + "\n"
+            f.write(tmp)
+
+    with open("./../data/" + filename + "_out.txt", "w+") as f:
+        for r in result:
+            tmp = str(r.get("time")) + " " + str(r.get("nb_out")) + "\n"
+            f.write(tmp)
+
+
+def plot_delta_variance(filename, links, nb_vertexes, instant, delta):
+    result = nb_in_out_delta_variance(links, nb_vertexes, instant, delta)
+    with open("./../data/" + filename + "_in.txt", "w+") as f:
+        for r in result[0]:
+            tmp = str(r.get("time")) + " " + str(r.get("nb_in")) + "\n"
+            f.write(tmp)
+
+    with open("./../data/" + filename + "_out.txt", "w+") as f:
+        for r in result:
+            tmp = str(r.get("time")) + " " + str(r.get("nb_out")) + "\n"
+            f.write(tmp)
+
 
 """
     To plot with gnuplot :)

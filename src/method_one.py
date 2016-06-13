@@ -1,6 +1,3 @@
-import time
-
-
 def compute_nb_in_out(links, nb_vertexes):
     if len(links) <= 0:
         raise Exception("Helppppppp! links is empty!")
@@ -16,7 +13,6 @@ def compute_nb_in_out(links, nb_vertexes):
             mat_prev[i][j] = -1
         mat_prev[i][i] = 0
 
-    st = time.time()
     for elem in links:
         if cur_time == -1:
             cur_time = elem.time
@@ -55,7 +51,6 @@ def compute_nb_in_out(links, nb_vertexes):
                     if mat_prev[elem.nodeB][i] != -1:
                         if mat[elem.nodeA][i] == -1 or mat[elem.nodeA][i] > mat_prev[elem.nodeB][i]:
                             mat[elem.nodeA][i] = mat_prev[elem.nodeB][i]
-    print "Loop: " + str(time.time() - st)
 
     for i in range(nb_vertexes):
         mat[i][i] = cur_time
@@ -222,3 +217,61 @@ def compute_vertex_nb_out(links, nb_vertexes, vertex_id):
                 res[i] = result[1][vertex_id]
 
     return nb_out, res
+
+
+def nb_in_out_with_fixed_value(result, value):
+    nb = 0
+
+    for i in range(len(result)):
+        if result[i].get(i)[0] == value or result[i].get(i)[1] == value:
+            nb += 1
+
+    return nb
+
+
+def nb_in_out_fixed_vertex(links, vertex_id, nb_vertexes):
+    result = []
+    t = set()
+
+    for i in links:
+        t.add(i.time)
+
+    # computing for each time could isn't efficient, so let give ourselv
+    for i in t:
+        tmp_links = filter(lambda e: e.time < i, links)
+        if len(tmp_links) > 0:
+            tmp_res = compute_nb_in_out(tmp_links, nb_vertexes)
+            result.append({"time": i, "nb_in": tmp_res[vertex_id].get(vertex_id)[0],
+                           "nb_out": tmp_res[vertex_id].get(vertex_id)[1]})
+
+    return result
+
+
+def nb_in_out_delta_variance(links, nb_vertexes, instant, delta):
+    result_plus_delta = []
+    result_minus_delta = []
+    result_instant = []
+
+    # print str(links[len(links)-1].time) + " " + str(links[0].time)
+    if instant - instant < links[len(links)-1].time or delta + instant > links[0].time:
+        raise Exception("Make sure delta-instant > 0 and delta+instant < tmax")
+
+    tmp = filter(lambda e: e.time < instant, links)
+    tmp_plus = filter(lambda e: instant-delta < e.time <= instant, links)
+    tmp_minus = filter(lambda e: instant < e.time <= instant+delta, links)
+
+    tmp_i = compute_nb_in_out(tmp, nb_vertexes)
+    tmp_p = compute_nb_in_out(tmp_minus, nb_vertexes)
+    tmp_m = compute_nb_in_out(tmp_plus, nb_vertexes)
+
+    # print ' '.join(map(str, links))
+    # print "instant: " + str(instant) + " delta: " + str(delta)
+    # print "yo: " + ' '.join(map(str, tmp_minus))
+    # print "yeah: " + ' '.join(map(str, tmp_plus))
+
+    for i in range(nb_vertexes):
+        result_minus_delta.append({"nb_in": tmp_m[i].get(i)[0], "nb_out": tmp_m[i].get(i)[1]})
+        result_plus_delta.append({"nb_in": tmp_p[i].get(i)[0], "nb_out": tmp_p[i].get(i)[1]})
+        result_instant.append({"nb_in": tmp_i[i].get(i)[0], "nb_out": tmp_i[i].get(i)[1]})
+
+    return result_minus_delta, result_plus_delta, result_instant
