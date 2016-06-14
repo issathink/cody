@@ -1,6 +1,6 @@
 def compute_nb_in_out(links, nb_vertexes):
     if len(links) <= 0:
-        raise Exception("Helppppppp! links is empty!")
+        raise Exception("Help! links is empty!")
 
     cur_time = -1
     mat = [[0]*nb_vertexes for _ in range(nb_vertexes)]
@@ -97,7 +97,7 @@ def compute_nb_in_out_array(links, nb_vertexes):
 
 def compute_vertex_nb_in(links, nb_vertexes, vertex_id):
     if len(links) <= 0:
-        raise Exception("Helppppppp! links is empty!")
+        raise Exception("Help! links is empty!")
 
     res = [-1 for _ in range(nb_vertexes)]
     res_prev = [-1 for _ in range(nb_vertexes)]
@@ -155,7 +155,7 @@ def compute_vertex_nb_in(links, nb_vertexes, vertex_id):
 
 def compute_vertex_nb_in2(links, nb_vertexes, vertex_id):
     if len(links) <= 0:
-        raise Exception("Helppppppp! links is empty!")
+        raise Exception("Help! links is empty!")
 
     res = [-1 for _ in range(nb_vertexes)]
     res_prev = [-1 for _ in range(nb_vertexes)]
@@ -203,7 +203,7 @@ def compute_vertex_nb_in2(links, nb_vertexes, vertex_id):
 
 def compute_vertex_nb_out(links, nb_vertexes, vertex_id):
     if len(links) <= 0:
-        raise Exception("Helppppppp! links is empty!")
+        raise Exception("Help! links is empty!")
 
     nb_out = 0
     res = [-1 for _ in range(nb_vertexes)]
