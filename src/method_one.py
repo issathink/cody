@@ -258,16 +258,11 @@ def nb_in_out_delta_variance(links, nb_vertexes, instant, delta):
 
     tmp = filter(lambda e: e.time < instant, links)
     tmp_plus = filter(lambda e: instant-delta < e.time <= instant, links)
-    tmp_minus = filter(lambda e: instant < e.time <= instant+delta, links)
+    tmp_minus = filter(lambda e: instant-delta < e.time <= instant+delta, links)
 
     tmp_i = compute_nb_in_out(tmp, nb_vertexes)
     tmp_p = compute_nb_in_out(tmp_minus, nb_vertexes)
     tmp_m = compute_nb_in_out(tmp_plus, nb_vertexes)
-
-    # print ' '.join(map(str, links))
-    # print "instant: " + str(instant) + " delta: " + str(delta)
-    # print "yo: " + ' '.join(map(str, tmp_minus))
-    # print "yeah: " + ' '.join(map(str, tmp_plus))
 
     for i in range(nb_vertexes):
         result_minus_delta.append({"nb_in": tmp_m[i].get(i)[0], "nb_out": tmp_m[i].get(i)[1]})

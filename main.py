@@ -6,7 +6,8 @@ from src.tool import check_int
 from src.tool import get_time_links
 from src.tool import generate_plot_file
 from src.tool import plot_in_out_for_each_value
-from src.tool import plot_vertex_distribution
+from src.tool import plot_vertex_evolution
+from src.tool import plot_delta_variance
 from src.method_one import compute_nb_in_out
 from src.method_one import nb_in_out_fixed_vertex
 from src.method_one import nb_in_out_delta_variance
@@ -56,9 +57,10 @@ print "\n$$$ nb_in/out matrix: " + str(time.time() - start) + " sec"
 plot_in_out_for_each_value("foreach_value", result)
 
 # print nb_in_out_fixed_vertex(links, 2, nb_vertexes)
-plot_vertex_distribution("distribution", links, 2, nb_vertexes)
+# plot_vertex_evolution("evolution", links, 2, nb_vertexes)
 
-print nb_in_out_delta_variance(links, nb_vertexes, 40, 10)
+# print nb_in_out_delta_variance(links, nb_vertexes, 40, 10)
+plot_delta_variance("variance", links, nb_vertexes, 500, 10)
 
 """
 # This is version is slightly slower for small data than the previous one

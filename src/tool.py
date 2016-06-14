@@ -64,7 +64,7 @@ def plot_in_out_for_each_value(filename, result):
             f.write(tmp)
 
 
-def plot_vertex_distribution(filename, links, vertex_id, nb_vertexes):
+def plot_vertex_evolution(filename, links, vertex_id, nb_vertexes):
     result = nb_in_out_fixed_vertex(links, vertex_id, nb_vertexes)
     with open("./../data/" + filename + "_in.txt", "w+") as f:
         for r in result:
@@ -80,13 +80,16 @@ def plot_vertex_distribution(filename, links, vertex_id, nb_vertexes):
 def plot_delta_variance(filename, links, nb_vertexes, instant, delta):
     result = nb_in_out_delta_variance(links, nb_vertexes, instant, delta)
     with open("./../data/" + filename + "_in.txt", "w+") as f:
-        for r in result[0]:
-            tmp = str(r.get("time")) + " " + str(r.get("nb_in")) + "\n"
+        for i in range(len(result[0])):
+            print str(result[0][i]) + " " + str(result[1][i])
+            diff = result[1][i].get("nb_in") - result[0][i].get("nb_in")
+            tmp = str(i) + " " + str(diff) + "\n"
             f.write(tmp)
 
     with open("./../data/" + filename + "_out.txt", "w+") as f:
-        for r in result:
-            tmp = str(r.get("time")) + " " + str(r.get("nb_out")) + "\n"
+        for i in range(len(result[0])):
+            diff = result[1][i].get("nb_out") - result[0][i].get("nb_out")
+            tmp = str(i) + " " + str(diff) + "\n"
             f.write(tmp)
 
 
