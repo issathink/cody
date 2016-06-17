@@ -3,6 +3,7 @@ from src.timelink import Timelink
 from src.method_one import nb_in_out_with_fixed_value
 from src.method_one import nb_in_out_fixed_vertex
 from src.method_one import nb_in_out_delta_variance
+from src.method_one import compute_nb_in_out
 
 
 def check_int(s):
@@ -91,6 +92,31 @@ def plot_delta_variance(filename, links, nb_vertexes, instant, delta):
             diff = result[1][i].get("nb_out") - result[0][i].get("nb_out")
             tmp = str(i) + " " + str(diff) + "\n"
             f.write(tmp)
+
+
+def plot_in_out_for_each_instant(filename, links, nb_vertexes, each):
+    instants = set()
+
+    for elem in links:
+        instants.add(elem.time)
+
+    print "Length of instants: " + str(len(instants))
+    instants = list(instants)
+
+    if len(instants) < 10*each:
+        for i in range(len(instants)):
+            tmp = filter(lambda e: e.time < instants[i], links)
+            if len(tmp) > 0:
+                result = compute_nb_in_out(tmp, nb_vertexes)
+                generate_plot_file(filename+str(i), result)
+            print "> " + str(i)
+    else:
+        for i in range(0, len(instants), each):
+            tmp = filter(lambda e: e.time < instants[i], links)
+            if len(tmp) > 0:
+                result = compute_nb_in_out(tmp, nb_vertexes)
+                generate_plot_file(filename + str(i), result)
+            print "> " + str(i)
 
 
 """

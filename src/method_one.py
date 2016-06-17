@@ -270,3 +270,4 @@ def nb_in_out_delta_variance(links, nb_vertexes, instant, delta):
         result_instant.append({"nb_in": tmp_i[i].get(i)[0], "nb_out": tmp_i[i].get(i)[1]})
 
     return result_minus_delta, result_plus_delta, result_instant
+
