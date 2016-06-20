@@ -125,4 +125,6 @@ def plot_in_out_for_each_instant(filename, links, nb_vertexes, each):
     $ set term jpeg size 800,600 font "Verdana,10"
     $ set output "filename.jpg"
     $ plot "file1.txt" w l title 'Label 1', "file2.txt" w l title 'Label 2'
+
+    $ gnuplot -e "src='rollernet.dyn100_nb_in.txt'; dst='a.jpg'; xmax='70'; ymax='70'" ./../src/plot.plg
 """
