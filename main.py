@@ -25,7 +25,7 @@ from src.method_one import compute_vertex_nb_out
 # args = sys.stdin.readline().split(" ")
 # rollernet middle: 5126
 # enron middle: 67697915
-args = "../data/rollernet.dyn 0 5126".split(" ")
+args = "../data/enron.dyn 0 5126".split(" ")
 
 if len(args) <= 2:
     print "Usage:  filename  vertex_id (>0)  time (>0)"

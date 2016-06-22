@@ -102,6 +102,7 @@ def plot_in_out_for_each_instant(filename, links, nb_vertexes, each):
 
     print "Length of instants: " + str(len(instants))
     instants = list(instants)
+    instants.sort()
 
     if len(instants) < 10*each:
         for i in range(len(instants)):
@@ -116,8 +117,7 @@ def plot_in_out_for_each_instant(filename, links, nb_vertexes, each):
             if len(tmp) > 0:
                 result = compute_nb_in_out(tmp, nb_vertexes)
                 generate_plot_file(filename + str(i), result)
-            print "> " + str(i)
-
+            print ">> " + str(i) + " instants[i] = " + str(instants[i])
 
 """
     To plot with gnuplot :)

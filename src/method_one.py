@@ -236,7 +236,7 @@ def nb_in_out_fixed_vertex(links, vertex_id, nb_vertexes):
     for i in links:
         t.add(i.time)
 
-    # computing for each time could isn't efficient, so let give ourselv
+    # computing for each time isn't efficient
     for i in t:
         tmp_links = filter(lambda e: e.time < i, links)
         if len(tmp_links) > 0:
