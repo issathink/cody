@@ -94,6 +94,7 @@ def plot_delta_variance(filename, links, nb_vertexes, instant, delta):
             f.write(tmp)
 
 
+# Generate file at each instant (each file will be plotted and the sequence will be a video magic)
 def plot_in_out_for_each_instant(filename, links, nb_vertexes, each):
     instants = set()
 

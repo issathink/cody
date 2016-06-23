@@ -7,6 +7,7 @@ def compute_nb_in_out(links, nb_vertexes):
     mat_prev = [[0]*nb_vertexes for _ in range(nb_vertexes)]
     result = []
 
+    # why ???
     for i in range(nb_vertexes):
         for j in range(nb_vertexes):
             mat[i][j] = -1
