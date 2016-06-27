@@ -1,4 +1,22 @@
-def compute_nb_in_out(links, nb_vertexes):
+import tool
+
+
+def compute_nb_in_out(filename, instant):
+    result = []
+    (links, vertexes) = tool.get_time_links(filename, instant)
+    nb_vertexes = len(vertexes)
+    res_in = compute_nb_in_out_intermediate(links, nb_vertexes)
+    (links, vertexes) = tool.get_time_links(filename, instant, True)
+    nb_vertexes = len(vertexes)
+    res_out = compute_nb_in_out_intermediate(links, nb_vertexes)
+
+    for i in range(nb_vertexes):
+        result.append({i: (res_in[i].get(i)[0], res_out[i].get(i)[1])})
+
+    return result
+
+
+def compute_nb_in_out_intermediate(links, nb_vertexes):
     if len(links) <= 0:
         raise Exception("Help! links is empty!")
 
@@ -241,7 +259,7 @@ def nb_in_out_fixed_vertex(links, vertex_id, nb_vertexes):
     for i in t:
         tmp_links = filter(lambda e: e.time < i, links)
         if len(tmp_links) > 0:
-            tmp_res = compute_nb_in_out(tmp_links, nb_vertexes)
+            tmp_res = compute_nb_in_out_array(tmp_links, nb_vertexes)
             result.append({"time": i, "nb_in": tmp_res[vertex_id].get(vertex_id)[0],
                            "nb_out": tmp_res[vertex_id].get(vertex_id)[1]})
 
@@ -261,9 +279,12 @@ def nb_in_out_delta_variance(links, nb_vertexes, instant, delta):
     tmp_plus = filter(lambda e: instant-delta < e.time <= instant, links)
     tmp_minus = filter(lambda e: instant-delta < e.time <= instant+delta, links)
 
-    tmp_i = compute_nb_in_out(tmp, nb_vertexes)
-    tmp_p = compute_nb_in_out(tmp_minus, nb_vertexes)
-    tmp_m = compute_nb_in_out(tmp_plus, nb_vertexes)
+    # tmp_i = compute_nb_in_out(tmp, nb_vertexes)
+    # tmp_p = compute_nb_in_out(tmp_minus, nb_vertexes)
+    # tmp_m = compute_nb_in_out(tmp_plus, nb_vertexes)
+    tmp_i = compute_nb_in_out_array(tmp, nb_vertexes)
+    tmp_p = compute_nb_in_out_array(tmp_minus, nb_vertexes)
+    tmp_m = compute_nb_in_out_array(tmp_plus, nb_vertexes)
 
     for i in range(nb_vertexes):
         result_minus_delta.append({"nb_in": tmp_m[i].get(i)[0], "nb_out": tmp_m[i].get(i)[1]})

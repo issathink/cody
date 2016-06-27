@@ -1,4 +1,5 @@
 import os
+import random
 from src.timelink import Timelink
 from src.method_one import nb_in_out_with_fixed_value
 from src.method_one import nb_in_out_fixed_vertex
@@ -12,7 +13,7 @@ def check_int(s):
     return s.isdigit()
 
 
-def get_time_links(filename, instant=None):
+def get_time_links(filename, instant=None, ordering=None):
     l = []
     v = set()
 
@@ -28,7 +29,10 @@ def get_time_links(filename, instant=None):
             v.add(nodeB)
 
     if instant is not None:
-        l = filter(lambda e: e.time < instant, l)
+        if ordering is None:
+            l = filter(lambda e: e.time < instant, l)
+        else:
+            l = filter(lambda e: e.time >= instant, l)
 
     return l, v
 
@@ -39,6 +43,23 @@ def get_time_low(l, time):
 
 def get_time_up(l, time):
     return filter(lambda e: e.time > time, l)
+
+
+def random_time_links_generator(filename, links_size, nb_nodes, time_max):
+    result = []
+
+    for i in range(links_size):
+        sample = random.sample(range(nb_nodes), 2)
+        time = random.randint(time_max)
+        elem = Timelink.create(sample[0], sample[1], time)
+        result.append(elem)
+
+    result = sorted(result, key=lambda e: e.timelink)
+    with open("./../data/" + filename, "w+") as f:
+        for r in result:
+            f.write(str(r.nodeA) + " " + str(r.nodeB) + " " + str(r.timelink))
+
+    return result
 
 
 def generate_plot_file(filename, result):
