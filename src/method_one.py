@@ -266,6 +266,22 @@ def nb_in_out_fixed_vertex(links, vertex_id, nb_vertexes):
     return result
 
 
+def nb_in_out_delta(filename, instant, delta):
+    result = []
+    (links, vertexes) = tool.get_time_links(filename)
+    nb_vertexes = len(vertexes)
+
+    links_in = filter(lambda e: instant-delta < e.time < instant, links)
+    links_out = filter(lambda e: instant < e.time < instant+delta, links)
+
+    res_in = compute_nb_in_out_intermediate(links_in, nb_vertexes)
+    res_out = compute_nb_in_out_intermediate(links_out, nb_vertexes)
+
+    for i in range(nb_vertexes):
+        result.append({i: (res_in[i].get(i)[0], res_out[i].get(i)[1])})
+
+    return result
+
 def nb_in_out_delta_variance(links, nb_vertexes, instant, delta):
     result_plus_delta = []
     result_minus_delta = []

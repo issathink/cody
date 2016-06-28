@@ -116,8 +116,9 @@ def plot_delta_variance(filename, links, nb_vertexes, instant, delta):
 
 
 # Generate file at each instant (each file will be plotted and the sequence will be a video magic)
-def plot_in_out_for_each_instant(filename, links, nb_vertexes, each):
+def plot_in_out_for_each_instant(filename, each):
     instants = set()
+    (links, nb_vertexes) = get_time_links(filename)
 
     for elem in links:
         instants.add(elem.time)
@@ -127,19 +128,15 @@ def plot_in_out_for_each_instant(filename, links, nb_vertexes, each):
     instants.sort()
 
     if len(instants) < 10*each:
-        for i in range(len(instants)):
-            tmp = filter(lambda e: e.time < instants[i], links)
-            if len(tmp) > 0:
-                result = compute_nb_in_out(tmp, nb_vertexes)
-                generate_plot_file(filename+str(i), result)
+        for i in range(1, len(instants), 1):
+            result = compute_nb_in_out(filename, instants[i])
+            generate_plot_file(filename+str(i), result)
             print "> " + str(i)
     else:
-        for i in range(0, len(instants), each):
-            tmp = filter(lambda e: e.time < instants[i], links)
-            if len(tmp) > 0:
-                result = compute_nb_in_out(tmp, nb_vertexes)
-                generate_plot_file(filename + str(i), result)
-            print ">> " + str(i) + " instants[i] = " + str(instants[i])
+        for i in range(1, len(instants), each):
+            result = compute_nb_in_out(filename, instants[i])
+            generate_plot_file(filename + str(i), result)
+            print ">> " + str(i)
 
 """
     To plot with gnuplot :)

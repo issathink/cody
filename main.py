@@ -25,7 +25,7 @@ from src.method_one import compute_vertex_nb_out
 # args = sys.stdin.readline().split(" ")
 # rollernet middle: 5126
 # enron middle: 67697915
-args = "../data/rollernet.dyn 0 5126".split(" ")
+args = "../data/rollernet.dyn 0 9975".split(" ")
 
 if len(args) <= 2:
     print "Usage:  filename  vertex_id (>0)  time (>0)"
@@ -50,18 +50,17 @@ start = time.time()
 
 
 print "\n####### nb_in/out matrix: #########"
-result = compute_nb_in_out(filename, instant)
+# result = compute_nb_in_out(filename, instant)
 """l = filter(lambda e: e.time < instant, links)
 generate_plot_file("rollernet", result)"""
 # generate_plot_file("enron", result)
-for i in range(len(result)):
-    print "(nb_in, nb_out)[" + str(i) + "][" + str(instant) + "] = " + str(result[i])
-print "\n$$$ nb_in/out matrix: " + str(time.time() - start) + " sec"
+#for i in range(len(result)):
+#    print "(nb_in, nb_out)[" + str(i) + "][" + str(instant) + "] = " + str(result[i])
+#print "\n$$$ nb_in/out matrix: " + str(time.time() - start) + " sec"
 
-"""
-(links, vertexes) = get_time_links(filename)
-plot_in_out_for_each_instant(filename, links, nb_vertexes, 100)
-"""
+
+# (links, vertexes) = get_time_links(filename)
+plot_in_out_for_each_instant(filename, 1000)
 
 # print nb_in_out_with_fixed_value(result, 19)
 # plot_in_out_for_each_value("foreach_value", result)
