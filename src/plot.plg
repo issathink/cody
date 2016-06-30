@@ -2,4 +2,4 @@ set term jpeg size 800,600 font "Verdana,10"
 set output dst
 set xrange [0:xmax]
 set yrange [0:ymax]
-plot src
+plot src w l

@@ -238,11 +238,13 @@ def compute_vertex_nb_out(links, nb_vertexes, vertex_id):
     return nb_out, res
 
 
-def nb_in_out_with_fixed_value(result, value):
+def nb_in_out_distribution(result, value, in_out):
     nb = 0
 
     for i in range(len(result)):
-        if result[i].get(i)[0] == value or result[i].get(i)[1] == value:
+        if in_out is not None and result[i].get(i)[0] == value:
+            nb += 1
+        elif in_out is None and result[i].get(i)[1] == value:
             nb += 1
 
     return nb
@@ -281,6 +283,7 @@ def nb_in_out_delta(filename, instant, delta):
         result.append({i: (res_in[i].get(i)[0], res_out[i].get(i)[1])})
 
     return result
+
 
 def nb_in_out_delta_variance(links, nb_vertexes, instant, delta):
     result_plus_delta = []

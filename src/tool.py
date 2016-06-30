@@ -1,7 +1,7 @@
 import os
 import random
 from src.timelink import Timelink
-from src.method_one import nb_in_out_with_fixed_value
+from src.method_one import nb_in_out_distribution
 from src.method_one import nb_in_out_fixed_vertex
 from src.method_one import nb_in_out_delta_variance
 from src.method_one import compute_nb_in_out
@@ -79,10 +79,10 @@ def generate_plot_file(filename, result):
             f.write(tmp)
 
 
-def plot_in_out_for_each_value(filename, result):
-    with open("./../data/" + filename + ".txt", "w+") as f:
+def plot_in_out_distribution(filename, result, in_out):
+    with open("./data/" + filename + ".txt", "w+") as f:
         for i in range(len(result)):
-            tmp = str(i) + " " + str(nb_in_out_with_fixed_value(result, i)) + "\n"
+            tmp = str(i) + " " + str(nb_in_out_distribution(result, i, in_out)) + "\n"
             f.write(tmp)
 
 
