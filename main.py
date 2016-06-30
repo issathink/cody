@@ -25,7 +25,7 @@ from src.method_one import compute_vertex_nb_out
 # args = sys.stdin.readline().split(" ")
 # rollernet middle: 5126
 # enron middle: 67697915
-args = "../data/enron.dyn 0 67697915".split(" ")
+args = "../data/rollernet.dyn 0 67697915".split(" ")
 
 if len(args) <= 2:
     print "Usage:  filename  vertex_id (>0)  time (>0)"
@@ -50,9 +50,12 @@ start = time.time()
 
 
 print "\n####### nb_in/out matrix: #########"
-result = compute_nb_in_out(filename, instant)
+result = compute_nb_in_out(filename, instant=550)
+plot_in_out_distribution("rollernet.dyn550_nb_in", result, True)
+plot_in_out_distribution("rollernet.dyn550_nb_out", result, None)
+
 # l = filter(lambda e: e.time < instant, links)
-generate_plot_file("enron_mid", result)
+# generate_plot_file("enron_mid", result)
 
 # generate_plot_file("enron", result)
 # for i in range(len(result)):

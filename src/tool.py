@@ -80,7 +80,8 @@ def generate_plot_file(filename, result):
 
 
 def plot_in_out_distribution(filename, result, in_out):
-    with open("./data/" + filename + ".txt", "w+") as f:
+    print os.getcwd()
+    with open("./../data/" + filename + ".txt", "w+") as f:
         for i in range(len(result)):
             tmp = str(i) + " " + str(nb_in_out_distribution(result, i, in_out)) + "\n"
             f.write(tmp)

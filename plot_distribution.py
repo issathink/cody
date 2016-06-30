@@ -6,9 +6,9 @@ from src.method_one import compute_nb_in_out
 from src.method_one import nb_in_out_delta
 
 filename = "rollernet.dyn"
-each = 100
-delta = 300
-with_delta = True
+each = 1000
+delta = 3628800  # 604800
+with_delta = False
 start = time.time()
 
 instants = set()
@@ -32,7 +32,7 @@ if with_delta:
         if instants[j]+delta < instants[len(instants)-1]:
             break
 
-    print str(i) + ": " + str(instants[i]) + " " + str(j) +  ": " + str(instants[j])
+    print str(i) + ": " + str(instants[i]) + " " + str(j) + ": " + str(instants[j])
     for k in range(i, j, each):
         result = nb_in_out_delta("./data/" + filename, instants[k], delta)
         plot_in_out_distribution(filename + str(k) + "_nb_in", result, True)
