@@ -1,16 +1,16 @@
 class Timelink(object):
-    nodeA = -1;
-    nodeB = -1;
+    node_a = -1;
+    node_b = -1;
     time = -1;
 
-    def __init__(self, nodeA, nodeB, time):
-        self.nodeA = nodeA
-        self.nodeB = nodeB
-        self.time  = time
+    def __init__(self, node_a, node_b, time):
+        self.node_a = node_a
+        self.node_b = node_b
+        self.time = time
 
     def __str__(self):
-        return "[" + str(self.nodeA) + " " + str(self.nodeB) + " " + str(self.time) + "]"
+        return "[" + str(self.node_a) + " " + str(self.node_b) + " " + str(self.time) + "]"
 
     @classmethod
-    def create(self, nodeA, nodeB, time):
-        return Timelink(nodeA, nodeB, time)
+    def create(cls, node_a, node_b, time):
+        return Timelink(node_a, node_b, time)

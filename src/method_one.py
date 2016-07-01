@@ -52,24 +52,24 @@ def compute_nb_in_out_intermediate(links, nb_vertexes):
                 mat[i][i] = cur_time
             mat_prev = [row[:] for row in mat]
 
-        mat[elem.nodeA][elem.nodeB] = cur_time
-        mat[elem.nodeB][elem.nodeA] = cur_time
+        mat[elem.node_a][elem.node_b] = cur_time
+        mat[elem.node_b][elem.node_a] = cur_time
 
         for i in range(nb_vertexes):
-            if (i != elem.nodeA) and (i != elem.nodeB):
-                if mat_prev[elem.nodeA][i] != -1:
-                    if mat_prev[elem.nodeB][i] != -1:
-                        if mat[elem.nodeA][i] > mat_prev[elem.nodeB][i]:
-                            mat[elem.nodeA][i] = mat_prev[elem.nodeB][i]
-                        elif mat[elem.nodeB][i] > mat_prev[elem.nodeA][i]:
-                            mat[elem.nodeB][i] = mat_prev[elem.nodeA][i]
+            if (i != elem.node_a) and (i != elem.node_b):
+                if mat_prev[elem.node_a][i] != -1:
+                    if mat_prev[elem.node_b][i] != -1:
+                        if mat[elem.node_a][i] > mat_prev[elem.node_b][i]:
+                            mat[elem.node_a][i] = mat_prev[elem.node_b][i]
+                        elif mat[elem.node_b][i] > mat_prev[elem.node_a][i]:
+                            mat[elem.node_b][i] = mat_prev[elem.node_a][i]
                     else:
-                        if mat[elem.nodeB][i] == -1 or mat[elem.nodeB][i] > mat_prev[elem.nodeA][i]:
-                            mat[elem.nodeB][i] = mat_prev[elem.nodeA][i]
+                        if mat[elem.node_b][i] == -1 or mat[elem.node_b][i] > mat_prev[elem.node_a][i]:
+                            mat[elem.node_b][i] = mat_prev[elem.node_a][i]
                 else:
-                    if mat_prev[elem.nodeB][i] != -1:
-                        if mat[elem.nodeA][i] == -1 or mat[elem.nodeA][i] > mat_prev[elem.nodeB][i]:
-                            mat[elem.nodeA][i] = mat_prev[elem.nodeB][i]
+                    if mat_prev[elem.node_b][i] != -1:
+                        if mat[elem.node_a][i] == -1 or mat[elem.node_a][i] > mat_prev[elem.node_b][i]:
+                            mat[elem.node_a][i] = mat_prev[elem.node_b][i]
 
     for i in range(nb_vertexes):
         mat[i][i] = cur_time
@@ -127,14 +127,14 @@ def compute_vertex_nb_in(links, nb_vertexes, vertex_id):
     for elem in links:
         res[vertex_id] = elem.time
 
-        if elem.nodeA == vertex_id:
+        if elem.node_a == vertex_id:
             cur_time = elem.time
-            res[elem.nodeB] = cur_time
-            i_prev = elem.nodeB
-        elif elem.nodeB == vertex_id:
+            res[elem.node_b] = cur_time
+            i_prev = elem.node_b
+        elif elem.node_b == vertex_id:
             cur_time = elem.time
-            res[elem.nodeA] = cur_time
-            i_prev = elem.nodeA
+            res[elem.node_a] = cur_time
+            i_prev = elem.node_a
 
         prev_time = cur_time
         cur_time = elem.time
@@ -146,23 +146,23 @@ def compute_vertex_nb_in(links, nb_vertexes, vertex_id):
         #    for i in range(nb_vertexes):
         #        res_prev[i] = res[i]
 
-        if res_prev[elem.nodeA] != -1:
-            if res_prev[elem.nodeB] != -1:
-                if res[elem.nodeA] > res[elem.nodeB]:
-                    res[elem.nodeA] = res[elem.nodeB]
-                    i_prev = elem.nodeA
-                elif res[elem.nodeB] > res[elem.nodeA]:
-                    res[elem.nodeB] = res[elem.nodeA]
-                    i_prev = elem.nodeB
+        if res_prev[elem.node_a] != -1:
+            if res_prev[elem.node_b] != -1:
+                if res[elem.node_a] > res[elem.node_b]:
+                    res[elem.node_a] = res[elem.node_b]
+                    i_prev = elem.node_a
+                elif res[elem.node_b] > res[elem.node_a]:
+                    res[elem.node_b] = res[elem.node_a]
+                    i_prev = elem.node_b
             else:
-                if res[elem.nodeB] == -1 or res[elem.nodeB] > res[elem.nodeA]:
-                    res[elem.nodeB] = res_prev[elem.nodeA]
-                    i_prev = elem.nodeB
+                if res[elem.node_b] == -1 or res[elem.node_b] > res[elem.node_a]:
+                    res[elem.node_b] = res_prev[elem.node_a]
+                    i_prev = elem.node_b
         else:
-            if res_prev[elem.nodeB] != -1:
-                if res[elem.nodeA] == -1 or res[elem.nodeA] > res_prev[elem.nodeB]:
-                    res[elem.nodeA] = res_prev[elem.nodeB]
-                    i_prev = elem.nodeA
+            if res_prev[elem.node_b] != -1:
+                if res[elem.node_a] == -1 or res[elem.node_a] > res_prev[elem.node_b]:
+                    res[elem.node_a] = res_prev[elem.node_b]
+                    i_prev = elem.node_a
 
     nb_in = 0
     for i in range(nb_vertexes):
@@ -184,12 +184,12 @@ def compute_vertex_nb_in2(links, nb_vertexes, vertex_id):
     for elem in links:
         res[vertex_id] = elem.time
 
-        if elem.nodeA == vertex_id:
+        if elem.node_a == vertex_id:
             cur_time = elem.time
-            res[elem.nodeB] = cur_time
-        elif elem.nodeB == vertex_id:
+            res[elem.node_b] = cur_time
+        elif elem.node_b == vertex_id:
             cur_time = elem.time
-            res[elem.nodeA] = cur_time
+            res[elem.node_a] = cur_time
 
         prev_time = cur_time
         cur_time = elem.time
@@ -198,19 +198,19 @@ def compute_vertex_nb_in2(links, nb_vertexes, vertex_id):
             for i in range(nb_vertexes):
                 res_prev[i] = res[i]
 
-        if res_prev[elem.nodeA] != -1:
-            if res_prev[elem.nodeB] != -1:
-                if res[elem.nodeA] > res[elem.nodeB]:
-                    res[elem.nodeA] = res[elem.nodeB]
-                elif res[elem.nodeB] > res[elem.nodeA]:
-                    res[elem.nodeB] = res[elem.nodeA]
+        if res_prev[elem.node_a] != -1:
+            if res_prev[elem.node_b] != -1:
+                if res[elem.node_a] > res[elem.node_b]:
+                    res[elem.node_a] = res[elem.node_b]
+                elif res[elem.node_b] > res[elem.node_a]:
+                    res[elem.node_b] = res[elem.node_a]
             else:
-                if res[elem.nodeB] == -1 or res[elem.nodeB] > res[elem.nodeA]:
-                    res[elem.nodeB] = res_prev[elem.nodeA]
+                if res[elem.node_b] == -1 or res[elem.node_b] > res[elem.node_a]:
+                    res[elem.node_b] = res_prev[elem.node_a]
         else:
-            if res_prev[elem.nodeB] != -1:
-                if res[elem.nodeA] == -1 or res[elem.nodeA] > res_prev[elem.nodeB]:
-                    res[elem.nodeA] = res_prev[elem.nodeB]
+            if res_prev[elem.node_b] != -1:
+                if res[elem.node_a] == -1 or res[elem.node_a] > res_prev[elem.node_b]:
+                    res[elem.node_a] = res_prev[elem.node_b]
 
     nb_in = 0
     for i in range(nb_vertexes):
@@ -250,21 +250,22 @@ def nb_in_out_distribution(result, value, in_out):
     return nb
 
 
-def nb_in_out_fixed_vertex(links, vertex_id, nb_vertexes):
+def nb_in_out_fixed_vertex(filename, vertex_id, each):
     result = []
     t = set()
+    (links, vertexes) = tool.get_time_links("./data/" + filename)
 
     for i in links:
         t.add(i.time)
+    t = list(t)
 
     # computing for each time isn't efficient
-    for i in t:
-        tmp_links = filter(lambda e: e.time < i, links)
-        if len(tmp_links) > 0:
-            tmp_res = compute_nb_in_out_array(tmp_links, nb_vertexes)
-            result.append({"time": i, "nb_in": tmp_res[vertex_id].get(vertex_id)[0],
-                           "nb_out": tmp_res[vertex_id].get(vertex_id)[1]})
-
+    for i in range(t[1], t[-1], each):
+        # tmp_res = compute_nb_in_out_array(tmp_links, nb_vertexes)
+        tmp_res = compute_nb_in_out("./data/" + filename, i)
+        result.append({"time": i, "nb_in": tmp_res[vertex_id].get(vertex_id)[0],
+                       "nb_out": tmp_res[vertex_id].get(vertex_id)[1]})
+        print "> " + str(i)
     return result
 
 
@@ -291,7 +292,7 @@ def nb_in_out_delta_variance(links, nb_vertexes, instant, delta):
     result_instant = []
 
     # print str(links[len(links)-1].time) + " " + str(links[0].time)
-    if instant - instant < links[len(links)-1].time or delta + instant > links[0].time:
+    if instant - instant < links[-1].time or delta + instant > links[0].time:
         raise Exception("Make sure delta-instant > 0 and delta+instant < tmax")
 
     tmp = filter(lambda e: e.time < instant, links)

@@ -21,12 +21,12 @@ def get_time_links(filename, instant=None, ordering=None):
         for elem in elems:
             tmp = elem.split(" ")
             time = int(tmp[2])
-            nodeA = int(tmp[0])
-            nodeB = int(tmp[1])
-            timelink = Timelink.create(nodeA, nodeB, time)
-            l.append(timelink)
-            v.add(nodeA)
-            v.add(nodeB)
+            node_a = int(tmp[0])
+            node_b = int(tmp[1])
+            time_link = Timelink.create(node_a, node_b, time)
+            l.append(time_link)
+            v.add(node_a)
+            v.add(node_b)
 
     if instant is not None:
         if ordering is None:
@@ -54,24 +54,23 @@ def random_time_links_generator(filename, links_size, nb_nodes, time_max):
         elem = Timelink.create(sample[0], sample[1], time)
         result.append(elem)
 
-    result = sorted(result, key=lambda e: e.timelink)
-    with open("./../data/" + filename, "w+") as f:
+    result = sorted(result, key=lambda e: e.time_link)
+    with open("./data/" + filename, "w+") as f:
         for r in result:
-            f.write(str(r.nodeA) + " " + str(r.nodeB) + " " + str(r.timelink))
+            f.write(str(r.node_a) + " " + str(r.node_b) + " " + str(r.time_link))
 
     return result
 
 
-def generate_plot_file(filename, result):
-    # print result
-    with open("./../data/" + filename + "_nb_in.txt", "w+") as f:
+def generate_plot_file(directory, filename, result):
+    with open(directory + filename + "_nb_in.txt", "w+") as f:
         tmp = "0 " + str(result[0].get(0)[0])
         f.write(tmp)
         for i in range(1, len(result)):
             tmp = "\n" + str(i) + " " + str(result[i].get(i)[0])
             f.write(tmp)
 
-    with open("./../data/" + filename + "_nb_out.txt", "w+") as f:
+    with open(directory + filename + "_nb_out.txt", "w+") as f:
         tmp = "0 " + str(result[0].get(0)[1])
         f.write(tmp)
         for i in range(1, len(result)):
@@ -79,22 +78,21 @@ def generate_plot_file(filename, result):
             f.write(tmp)
 
 
-def plot_in_out_distribution(filename, result, in_out):
-    print os.getcwd()
-    with open("./../data/" + filename + ".txt", "w+") as f:
+def plot_in_out_distribution(directory, filename, result, in_out):
+    with open(directory + filename + ".txt", "w+") as f:
         for i in range(len(result)):
             tmp = str(i) + " " + str(nb_in_out_distribution(result, i, in_out)) + "\n"
             f.write(tmp)
 
 
-def plot_vertex_evolution(filename, links, vertex_id, nb_vertexes):
-    result = nb_in_out_fixed_vertex(links, vertex_id, nb_vertexes)
-    with open("./../data/" + filename + "_in.txt", "w+") as f:
+def plot_vertex_evolution(directory, filename, vertex_id, each):
+    result = nb_in_out_fixed_vertex(filename, vertex_id, each)
+    with open(directory + filename + "_in.txt", "w+") as f:
         for r in result:
             tmp = str(r.get("time")) + " " + str(r.get("nb_in")) + "\n"
             f.write(tmp)
 
-    with open("./../data/" + filename + "_out.txt", "w+") as f:
+    with open(directory + filename + "_out.txt", "w+") as f:
         for r in result:
             tmp = str(r.get("time")) + " " + str(r.get("nb_out")) + "\n"
             f.write(tmp)
@@ -102,14 +100,14 @@ def plot_vertex_evolution(filename, links, vertex_id, nb_vertexes):
 
 def plot_delta_variance(filename, links, nb_vertexes, instant, delta):
     result = nb_in_out_delta_variance(links, nb_vertexes, instant, delta)
-    with open("./../data/" + filename + "_in.txt", "w+") as f:
+    with open("./data/" + filename + "_in.txt", "w+") as f:
         for i in range(len(result[0])):
             print str(result[0][i]) + " " + str(result[1][i])
             diff = result[1][i].get("nb_in") - result[0][i].get("nb_in")
             tmp = str(i) + " " + str(diff) + "\n"
             f.write(tmp)
 
-    with open("./../data/" + filename + "_out.txt", "w+") as f:
+    with open("./data/" + filename + "_out.txt", "w+") as f:
         for i in range(len(result[0])):
             diff = result[1][i].get("nb_out") - result[0][i].get("nb_out")
             tmp = str(i) + " " + str(diff) + "\n"
@@ -117,9 +115,9 @@ def plot_delta_variance(filename, links, nb_vertexes, instant, delta):
 
 
 # Generate file at each instant (each file will be plotted and the sequence will be a video magic)
-def plot_in_out_for_each_instant(filename, each):
+def plot_in_out_for_each_instant(directory, filename, each):
     instants = set()
-    (links, nb_vertexes) = get_time_links(filename)
+    (links, nb_vertexes) = get_time_links("./data/" + filename)
 
     for elem in links:
         instants.add(elem.time)
@@ -128,6 +126,7 @@ def plot_in_out_for_each_instant(filename, each):
     instants = list(instants)
     instants.sort()
 
+    """
     if len(instants) < 10*each:
         for i in range(1, len(instants), 1):
             result = compute_nb_in_out(filename, instants[i])
@@ -138,6 +137,12 @@ def plot_in_out_for_each_instant(filename, each):
             result = compute_nb_in_out(filename, instants[i])
             generate_plot_file(filename + str(i), result)
             print ">> " + str(i)
+    """
+
+    for i in range(1, instants[-1], each):
+        result = compute_nb_in_out("./data/" + filename, i)
+        generate_plot_file(directory, filename + str(i), result)
+        print ">> " + str(i)
 
 """
     To plot with gnuplot :)
