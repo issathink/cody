@@ -85,8 +85,8 @@ def plot_in_out_distribution(directory, filename, result, in_out):
             f.write(tmp)
 
 
-def plot_vertex_evolution(directory, filename, vertex_id, each):
-    result = nb_in_out_fixed_vertex(filename, vertex_id, each)
+def plot_vertex_evolution(directory, filename, vertex_id, each, delta):
+    result = nb_in_out_fixed_vertex(filename, vertex_id, each, delta)
     with open(directory + filename + "_in.txt", "w+") as f:
         for r in result:
             tmp = str(r.get("time")) + " " + str(r.get("nb_in")) + "\n"

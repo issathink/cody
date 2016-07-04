@@ -5,10 +5,10 @@ from src.tool import plot_in_out_distribution
 from src.method_one import compute_nb_in_out
 from src.method_one import nb_in_out_delta
 
-filename = "enron.dyn"
-each = 1000
-delta = 3628800  # 604800
-with_delta = False
+filename = "rollernet.dyn"  # "enron.dyn"
+each = 240
+delta = 240  # 3628800  # 604800
+with_delta = True
 start = time.time()
 directory = "./data/distribution/"
 
@@ -38,8 +38,8 @@ if with_delta:
         plot_in_out_distribution(directory, filename + str(k) + "_nb_out", result, None)
         print "> " + str(k)
 else:
-    for i in range(instants[0], instants[-1], each):
-        result = compute_nb_in_out("./data/" + filename, instants[i])
+    for i in range(instants[1], instants[-1], each):
+        result = compute_nb_in_out("./data/" + filename, i)
         plot_in_out_distribution(directory, filename + str(i) + "_nb_in", result, True)
         plot_in_out_distribution(directory, filename + str(i) + "_nb_out", result, None)
         print "> " + str(i)

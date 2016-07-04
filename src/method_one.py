@@ -250,7 +250,7 @@ def nb_in_out_distribution(result, value, in_out):
     return nb
 
 
-def nb_in_out_fixed_vertex(filename, vertex_id, each):
+def nb_in_out_fixed_vertex(filename, vertex_id, each, delta):
     result = []
     t = set()
     (links, vertexes) = tool.get_time_links("./data/" + filename)
@@ -258,14 +258,27 @@ def nb_in_out_fixed_vertex(filename, vertex_id, each):
     for i in links:
         t.add(i.time)
     t = list(t)
+    t.sort()
 
-    # computing for each time isn't efficient
-    for i in range(t[1], t[-1], each):
-        # tmp_res = compute_nb_in_out_array(tmp_links, nb_vertexes)
-        tmp_res = compute_nb_in_out("./data/" + filename, i)
-        result.append({"time": i, "nb_in": tmp_res[vertex_id].get(vertex_id)[0],
-                       "nb_out": tmp_res[vertex_id].get(vertex_id)[1]})
-        print "> " + str(i)
+    if delta is None:
+        for i in range(t[1], t[-1], each):
+            tmp_res = compute_nb_in_out("./data/" + filename, i)
+            result.append({"time": i, "nb_in": tmp_res[vertex_id].get(vertex_id)[0],
+                           "nb_out": tmp_res[vertex_id].get(vertex_id)[1]})
+            print "> " + str(i)
+    else:
+        for i in range(len(t)):
+            if t[i] > delta:
+                break
+        for j in reversed(xrange(len(t) - 1)):
+            if t[j] + delta < t[-1]:
+                break
+
+        for k in range(t[i], t[j], each):
+            tmp_res = nb_in_out_delta("./data/" + filename, k, delta)
+            result.append({"time": k, "nb_in": tmp_res[vertex_id].get(vertex_id)[0],
+                           "nb_out": tmp_res[vertex_id].get(vertex_id)[1]})
+            print "> " + str(k)
     return result
 
 
