@@ -1,10 +1,12 @@
 import os
+import numpy
 import random
 from src.timelink import Timelink
 from src.method_one import nb_in_out_distribution
 from src.method_one import nb_in_out_fixed_vertex
+from src.method_one import nb_in_out_delta
 from src.method_one import nb_in_out_delta_variance
-from src.method_one import compute_nb_in_out
+from src.method_one import nb_in_out
 
 
 def check_int(s):
@@ -126,23 +128,53 @@ def plot_in_out_for_each_instant(directory, filename, each):
     instants = list(instants)
     instants.sort()
 
-    """
-    if len(instants) < 10*each:
-        for i in range(1, len(instants), 1):
-            result = compute_nb_in_out(filename, instants[i])
-            generate_plot_file(filename+str(i), result)
-            print "> " + str(i)
-    else:
-        for i in range(1, len(instants), each):
-            result = compute_nb_in_out(filename, instants[i])
-            generate_plot_file(filename + str(i), result)
-            print ">> " + str(i)
-    """
-
     for i in range(1, instants[-1], each):
-        result = compute_nb_in_out("./data/" + filename, i)
+        result = nb_in_out("./data/" + filename, i)
         generate_plot_file(directory, filename + str(i), result)
         print ">> " + str(i)
+
+
+def plot_mean_and_deviation(directory, filename, each, delta):
+    instants = set()
+    (links, nb_vertexes) = get_time_links("./data/" + filename)
+
+    for elem in links:
+        instants.add(elem.time)
+    instants = list(instants)
+    instants.sort()
+
+    with open(directory + filename + "_in.txt", "w+") as f_in, open(directory + filename + "_out.txt", "w+") as f_out:
+        i = j = 0
+        if delta is not None:
+            for i in range(len(instants)):
+                if instants[i] > delta:
+                    break
+            for j in reversed(xrange(len(instants) - 1)):
+                if instants[j] + delta < instants[-1]:
+                    break
+        u = instants[1] if delta is None else instants[i]
+        v = instants[-1] if delta is None else instants[j]
+
+        for k in range(u, v, each):
+            t_in = []
+            t_out = []
+            result = nb_in_out("./data/" + filename, k) if delta is None \
+                else nb_in_out_delta("./data/" + filename, k, delta)
+
+            for i in range(len(result)):
+                t_in.append(result[i].get(i)[0])
+                t_out.append(result[i].get(i)[1])
+
+            dev_in = numpy.std(t_in)
+            dev_out = numpy.std(t_out)
+            mean_in = numpy.mean(t_in)
+            mean_out = numpy.mean(t_out)
+            tmp = str(k) + " " + str(mean_in) + " " + str(dev_in) + "\n"
+            f_in.write(tmp)
+            tmp = str(k) + " " + str(mean_out) + " " + str(dev_out) + "\n"
+            f_out.write(tmp)
+
+            print ">> " + str(k) + " mean_in: " + mean_in + " dev_in: " + dev_in
 
 """
     To plot with gnuplot :)
@@ -152,4 +184,5 @@ def plot_in_out_for_each_instant(directory, filename, each):
     $ plot "file1.txt" w l title 'Label 1', "file2.txt" w l title 'Label 2'
 
     $ gnuplot -e "src='rollernet.dyn100_nb_in.txt'; dst='a.jpg'; xmax='70'; ymax='70'" ./../src/plot.plg
+    $ plot "f.txt" using 1:2 with linespoints, "f.txt" w err  # for stat "standard deviation"
 """

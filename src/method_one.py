@@ -1,7 +1,7 @@
 import tool
 
 
-def compute_nb_in_out(filename, instant):
+def nb_in_out(filename, instant):
     result = []
     (links, vertexes) = tool.get_time_links(filename, instant)
     nb_vertexes = len(vertexes)
@@ -262,7 +262,7 @@ def nb_in_out_fixed_vertex(filename, vertex_id, each, delta):
 
     if delta is None:
         for i in range(t[1], t[-1], each):
-            tmp_res = compute_nb_in_out("./data/" + filename, i)
+            tmp_res = nb_in_out("./data/" + filename, i)
             result.append({"time": i, "nb_in": tmp_res[vertex_id].get(vertex_id)[0],
                            "nb_out": tmp_res[vertex_id].get(vertex_id)[1]})
             print "> " + str(i)
@@ -325,4 +325,5 @@ def nb_in_out_delta_variance(links, nb_vertexes, instant, delta):
         result_instant.append({"nb_in": tmp_i[i].get(i)[0], "nb_out": tmp_i[i].get(i)[1]})
 
     return result_minus_delta, result_plus_delta, result_instant
+
 

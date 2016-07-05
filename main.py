@@ -9,7 +9,7 @@ from src.tool import plot_vertex_evolution
 from src.tool import plot_delta_variance
 from src.tool import plot_in_out_for_each_instant
 from src.tool import get_time_links
-from src.method_one import compute_nb_in_out
+from src.method_one import nb_in_out
 from src.method_one import nb_in_out_fixed_vertex
 from src.method_one import nb_in_out_delta_variance
 from src.method_one import nb_in_out_distribution
@@ -50,7 +50,7 @@ start = time.time()
 
 
 print "\n####### nb_in/out matrix: #########"
-result = compute_nb_in_out(filename, instant=550)
+result = nb_in_out(filename, instant=550)
 plot_in_out_distribution("rollernet.dyn550_nb_in", result, True)
 plot_in_out_distribution("rollernet.dyn550_nb_out", result, None)
 

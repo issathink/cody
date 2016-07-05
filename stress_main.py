@@ -2,7 +2,7 @@ import time
 from src.tool import random_time_links_generator
 from src.tool import get_time_links
 from src.tool import generate_plot_file
-from src.method_one import compute_nb_in_out
+from src.method_one import nb_in_out
 
 filename = "test.txt"
 links_size = [10, 100, 1000, 10000, 100000, 1000000]
@@ -15,5 +15,5 @@ with open("./../data/stress.txt", "w+") as f:
         (links, vertexes) = get_time_links(filename)
         nb_vertexes = len(vertexes)
         start = time.time()
-        compute_nb_in_out(links, nb_vertexes)
+        nb_in_out(links, nb_vertexes)
         tmp = str(links_size[i]) + " " + str(time.time()-start)

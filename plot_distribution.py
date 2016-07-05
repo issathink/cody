@@ -2,7 +2,7 @@ import time
 
 from src.tool import get_time_links
 from src.tool import plot_in_out_distribution
-from src.method_one import compute_nb_in_out
+from src.method_one import nb_in_out
 from src.method_one import nb_in_out_delta
 
 filename = "rollernet.dyn"  # "enron.dyn"
@@ -39,7 +39,7 @@ if with_delta:
         print "> " + str(k)
 else:
     for i in range(instants[1], instants[-1], each):
-        result = compute_nb_in_out("./data/" + filename, i)
+        result = nb_in_out("./data/" + filename, i)
         plot_in_out_distribution(directory, filename + str(i) + "_nb_in", result, True)
         plot_in_out_distribution(directory, filename + str(i) + "_nb_out", result, None)
         print "> " + str(i)

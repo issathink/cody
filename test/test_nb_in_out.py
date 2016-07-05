@@ -1,6 +1,6 @@
 import unittest
 from src.tool import get_time_links
-from src.method_one import compute_nb_in_out
+from src.method_one import nb_in_out
 
 """
     The test file is ./data/test2.dyn
@@ -23,7 +23,7 @@ class MyTestCase(unittest.TestCase):
         (links, vertexes) = get_time_links("./../data/test2.dyn", 100)
         nb_vertexes = len(vertexes)
 
-        result = compute_nb_in_out(links, nb_vertexes)
+        result = nb_in_out(links, nb_vertexes)
 
         for i in range(nb_vertexes):
             self.assertEqual(expected_nb_in[i], result[i].get(i)[0])
