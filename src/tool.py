@@ -136,13 +136,16 @@ def plot_in_out_for_each_instant(directory, filename, each):
 
 def plot_mean_and_deviation(directory, filename, each, delta):
     instants = set()
-    (links, nb_vertexes) = get_time_links("./data/" + filename)
+    (links, vertexes) = get_time_links("./data/" + filename)
 
     for elem in links:
         instants.add(elem.time)
     instants = list(instants)
     instants.sort()
 
+    l_in = [0.0] * len(vertexes)
+    l_out = [0.0] * len(vertexes)
+    nb_t = 0.0
     with open(directory + filename + "_in.txt", "w+") as f_in, open(directory + filename + "_out.txt", "w+") as f_out:
         i = j = 0
         if delta is not None:
@@ -173,8 +176,29 @@ def plot_mean_and_deviation(directory, filename, each, delta):
             f_in.write(tmp)
             tmp = str(k) + " " + str(mean_out) + " " + str(dev_out) + "\n"
             f_out.write(tmp)
+            nb_t += 1.0
+            for i in range(len(result)):
+                l_in[i] += 1.0 if result[i].get(i)[0] >= mean_in else 0.0
+                l_out[i] += 1.0 if result[i].get(i)[1] >= mean_out else 0.0
 
-            print ">> " + str(k) + " mean_in: " + mean_in + " dev_in: " + dev_in
+            print ">> " + str(k) + " mean_in: " + str(mean_in) + " dev_in: " + str(dev_in)
+
+        print "t_in: " + str(l_in)
+        print "t_out: " + str(l_out)
+        for i in range(len(vertexes)):
+            l_in[i] /= nb_t
+            l_out[i] /= nb_t
+
+    print "nb_t: " + str(nb_t)
+    print "t_in: " + str(l_in)
+    print "t_out: " + str(l_out)
+    with open(directory + filename + "_percentage_in.txt", "w+") as f:
+        for i in range(len(vertexes)):
+            f.write(str(i) + " " + str(l_in[i]) + "\n")
+    with open(directory + filename + "_percentage_out.txt", "w+") as f:
+        for i in range(len(vertexes)):
+            f.write(str(i) + " " + str(l_out[i]) + "\n")
+
 
 """
     To plot with gnuplot :)
