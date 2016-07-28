@@ -1,5 +1,7 @@
+# For more please read the full report (it's in french, why not?)
+
 L=(T, V, E) time links.
 
-nb_in(v, t): at a given time, the number of nodes that can access v before t.
-nb_out(v, t): the number of nodes v can access before t (starting at 0 or the minimum time). [old]
-nb_out(v, t): the number of nodes v can access starting at t (or after) and ending before tmax.
+rin(v, t): at a given time, the number of nodes that can access v before t.
+rout(v, t): the number of nodes v can access before t (starting at 0 or the minimum time). [old]
+rout(v, t): the number of nodes v can access starting at t (or after) and ending before tmax.

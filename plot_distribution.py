@@ -2,12 +2,12 @@ import time
 
 from src.tool import get_time_links
 from src.tool import plot_in_out_distribution
-from src.method_one import nb_in_out
-from src.method_one import nb_in_out_delta
+from src.algo import nb_in_out
+from src.algo import nb_in_out_delta
 
 filename = "rollernet.dyn"  # "enron.dyn"
 each = 240
-delta = 240  # 3628800  # 604800
+delta = 120  # 3628800  # 604800
 with_delta = True
 start = time.time()
 directory = "./data/distribution/"
@@ -24,6 +24,7 @@ instants.sort()
 
 
 if with_delta:
+    i = j = 0
     for i in range(len(instants)):
         if instants[i] > delta:
             break

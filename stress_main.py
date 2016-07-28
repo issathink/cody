@@ -2,7 +2,7 @@ import time
 from src.tool import random_time_links_generator
 from src.tool import get_time_links
 from src.tool import generate_plot_file
-from src.method_one import nb_in_out
+from src.algo import nb_in_out
 
 filename = "test.txt"
 links_size = [10, 100, 1000, 10000, 100000, 1000000]

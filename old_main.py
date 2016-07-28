@@ -9,13 +9,13 @@ from src.tool import plot_vertex_evolution
 from src.tool import plot_delta_variance
 from src.tool import plot_in_out_for_each_instant
 from src.tool import get_time_links
-from src.method_one import nb_in_out
-from src.method_one import nb_in_out_fixed_vertex
-from src.method_one import nb_in_out_delta_variance
-from src.method_one import nb_in_out_distribution
-from src.method_one import compute_nb_in_out_array
-from src.method_one import compute_vertex_nb_in
-from src.method_one import compute_vertex_nb_out
+from src.algo import nb_in_out
+from src.algo import nb_in_out_fixed_vertex
+from src.algo import nb_in_out_delta_variance
+from src.algo import nb_in_out_distribution
+from src.algo import compute_nb_in_out_array
+from src.algo import compute_vertex_nb_in
+from src.algo import compute_vertex_nb_out
 
 
 """
@@ -25,7 +25,7 @@ from src.method_one import compute_vertex_nb_out
 # args = sys.stdin.readline().split(" ")
 # rollernet middle: 5126
 # enron middle: 67697915
-args = "../data/rollernet.dyn 0 67697915".split(" ")
+args = "./data/rollernet.dyn 0 67697915".split(" ")
 
 if len(args) <= 2:
     print "Usage:  filename  vertex_id (>0)  time (>0)"

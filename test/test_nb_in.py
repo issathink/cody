@@ -1,6 +1,6 @@
 import unittest
 from src.tool import get_time_links
-from src.method_one import compute_vertex_nb_in
+from src.algo import compute_vertex_nb_in
 
 """
     The test file is ./data/test2.dyn

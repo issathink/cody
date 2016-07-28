@@ -2,9 +2,9 @@ import time
 from src.tool import plot_mean_and_deviation
 
 
-filename = "enron.dyn"  # "rollernet"
+filename = "enron.dyn"  # "enron"
 each = 1209600  # 240
-delta = 240  # 3628800  # 604800
+delta = 3628800  # 3628800  # 604800
 start = time.time()
 directory = "./data/deviation/"
 

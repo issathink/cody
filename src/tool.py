@@ -1,20 +1,30 @@
 import os
 import numpy
 import random
+from decimal import Decimal
 from src.timelink import Timelink
-from src.method_one import nb_in_out_distribution
-from src.method_one import nb_in_out_fixed_vertex
-from src.method_one import nb_in_out_delta
-from src.method_one import nb_in_out_delta_variance
-from src.method_one import nb_in_out
+from src.algo import nb_in_out_distribution
+from src.algo import nb_in_out_fixed_vertex
+from src.algo import nb_in_out_delta
+from src.algo import nb_in_out_delta_variance
+from src.algo import nb_in_out
 
-
+"""
+    Check given string contain only digits
+    :return boolean
+"""
 def check_int(s):
     if s[0] in '+':
         return s[1:].isdigit()
     return s.isdigit()
 
 
+"""
+    Given a filename, [instant], [ordering] it'll create a list of time links. If instant is
+    not None only only time links with time < instant will be selected and ordering is to
+    determine which sign (< or >=).
+    :return (list of time links, vertexes ids)
+"""
 def get_time_links(filename, instant=None, ordering=None):
     l = []
     v = set()
@@ -47,6 +57,7 @@ def get_time_up(l, time):
     return filter(lambda e: e.time > time, l)
 
 
+# Randomly generate time links.
 def random_time_links_generator(filename, links_size, nb_nodes, time_max):
     result = []
 
@@ -64,6 +75,7 @@ def random_time_links_generator(filename, links_size, nb_nodes, time_max):
     return result
 
 
+# Generate two rows file in order to plot with gnuplot.
 def generate_plot_file(directory, filename, result):
     with open(directory + filename + "_nb_in.txt", "w+") as f:
         tmp = "0 " + str(result[0].get(0)[0])
@@ -80,6 +92,7 @@ def generate_plot_file(directory, filename, result):
             f.write(tmp)
 
 
+# Generate plot file for statistical distribution
 def plot_in_out_distribution(directory, filename, result, in_out):
     with open(directory + filename + ".txt", "w+") as f:
         for i in range(len(result)):
@@ -87,6 +100,7 @@ def plot_in_out_distribution(directory, filename, result, in_out):
             f.write(tmp)
 
 
+# Generate plot file of the vertex evolution
 def plot_vertex_evolution(directory, filename, vertex_id, each, delta):
     result = nb_in_out_fixed_vertex(filename, vertex_id, each, delta)
     with open(directory + filename + "_in.txt", "w+") as f:
@@ -100,6 +114,7 @@ def plot_vertex_evolution(directory, filename, vertex_id, each, delta):
             f.write(tmp)
 
 
+#  This method should be removed
 def plot_delta_variance(filename, links, nb_vertexes, instant, delta):
     result = nb_in_out_delta_variance(links, nb_vertexes, instant, delta)
     with open("./data/" + filename + "_in.txt", "w+") as f:
@@ -134,6 +149,7 @@ def plot_in_out_for_each_instant(directory, filename, each):
         print ">> " + str(i)
 
 
+# Generate plot file of statistical mean and deviation
 def plot_mean_and_deviation(directory, filename, each, delta):
     instants = set()
     (links, vertexes) = get_time_links("./data/" + filename)
@@ -163,10 +179,14 @@ def plot_mean_and_deviation(directory, filename, each, delta):
             t_out = []
             result = nb_in_out("./data/" + filename, k) if delta is None \
                 else nb_in_out_delta("./data/" + filename, k, delta)
+            max_in = 0.0
+            max_out = 0.0
 
             for i in range(len(result)):
                 t_in.append(result[i].get(i)[0])
                 t_out.append(result[i].get(i)[1])
+                max_in = result[i].get(i)[0] if result[i].get(i)[0] > max_in else max_in
+                max_out = result[i].get(i)[1] if result[i].get(i)[1] > max_out else max_out
 
             dev_in = numpy.std(t_in)
             dev_out = numpy.std(t_out)
@@ -178,8 +198,10 @@ def plot_mean_and_deviation(directory, filename, each, delta):
             f_out.write(tmp)
             nb_t += 1.0
             for i in range(len(result)):
-                l_in[i] += 1.0 if result[i].get(i)[0] >= mean_in else 0.0
-                l_out[i] += 1.0 if result[i].get(i)[1] >= mean_out else 0.0
+                # l_in[i] += 1.0 if result[i].get(i)[0] >= mean_in else 0.0
+                # l_out[i] += 1.0 if result[i].get(i)[1] >= mean_out else 0.0
+                l_in[i] += result[i].get(i)[0] / (max_in*1.0)
+                l_out[i] += result[i].get(i)[1] / (max_out*1.0)
 
             print ">> " + str(k) + " mean_in: " + str(mean_in) + " dev_in: " + str(dev_in)
 
@@ -209,4 +231,6 @@ def plot_mean_and_deviation(directory, filename, each, delta):
 
     $ gnuplot -e "src='rollernet.dyn100_nb_in.txt'; dst='a.jpg'; xmax='70'; ymax='70'" ./../src/plot.plg
     $ plot "f.txt" using 1:2 with linespoints, "f.txt" w err  # for stat "standard deviation"
+
+    $ paste -d" " file1 file2 > output  # concatenate two files content line by line with space
 """
