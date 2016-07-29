@@ -227,6 +227,7 @@ def plot_mean_and_deviation(directory, filename, each, delta):
     $ gnuplot
     $ set term jpeg size 800,600 font "Verdana,10"
     $ set output "filename.jpg"
+    $ set xlabel "label name"
     $ plot "file1.txt" w l title 'Label 1', "file2.txt" w l title 'Label 2'
 
     $ gnuplot -e "src='rollernet.dyn100_nb_in.txt'; dst='a.jpg'; xmax='70'; ymax='70'" ./../src/plot.plg

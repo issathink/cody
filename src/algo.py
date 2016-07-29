@@ -286,7 +286,7 @@ def nb_in_out_fixed_vertex(filename, vertex_id, each, delta):
             tmp_res = nb_in_out_delta("./data/" + filename, k, delta)
             result.append({"time": k, "nb_in": tmp_res[vertex_id].get(vertex_id)[0],
                            "nb_out": tmp_res[vertex_id].get(vertex_id)[1]})
-            print "> " + str(k)
+            print ">> " + str(k)
     return result
 
 
@@ -308,7 +308,7 @@ def nb_in_out_delta(filename, instant, delta):
     return result
 
 
-# Again please about this one too. I just can't get rid of this i don't know why
+# Again please forget about this one too. I just can't get rid of this i don't know why
 def nb_in_out_delta_variance(links, nb_vertexes, instant, delta):
     result_plus_delta = []
     result_minus_delta = []
